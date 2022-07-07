@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import time
-
+# relay_1 GPIO sets the latching relay off
 relay1_Off = 20
 
 
