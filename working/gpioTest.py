@@ -1,6 +1,8 @@
 import RPi.GPIO as GPIO
 import time
 
+# Webcam uses gpio 20 and 21
+# uSDR tranciever will use gpio 19
 relay1_On = 21
 relay1_Off = 20
 relay2 = 19
