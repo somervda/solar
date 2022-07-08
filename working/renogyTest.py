@@ -1,4 +1,5 @@
 # Import Pymodbus
+import datetime
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 from pymodbus.transaction import ModbusRtuFramer
 # Create ModbusClient instance and connect
@@ -29,6 +30,7 @@ totalDayChargingAh = r.registers[0x11]
 totalDayDischargingAh = r.registers[0x12]
 chargingMode = r.registers[0x20].to_bytes(2, byteorder="big")[1]
 
+print(datetime.datetime.now())
 print('Battery Capacity {}%'.format(str(batteryCapacity)))
 print('Battery Voltage {}V'.format(str(batteryVoltage)))
 print('Solar Amps {}A'.format(str(solarAmps)))
