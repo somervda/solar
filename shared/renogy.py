@@ -16,6 +16,8 @@ class Renogy:
         self.outputVoltage = 0
         self.outputCurrent = 0
         self.outputPower = 0
+        self.chargingMode = 0
+        self.chargingModeDesc = ""
         self.modbus = ModbusClient(method='rtu', port='/dev/serial0', baudrate=9600,
                       stopbits=1, bytesize=8, parity='N', timeout=5, unit=1)
         # Get the first set of data
@@ -34,4 +36,22 @@ class Renogy:
         self.outputCurrent = r.registers[0x5]/100
         self.outputCurrent -= .085
         self.outputPower = self.outputVoltage*self.outputCurrent
+        self.chargingMode = r.registers[0x20].to_bytes(2, byteorder="big")[1]
+        if self.chargingMode == 0:
+            self.chargingModeDesc = 'Charging Deactivated'
+        elif self.chargingMode == 1:
+            self.chargingModeDesc='Charging Activated'
+        elif self.chargingMode == 2:
+            self.chargingModeDesc='MPPT Charging Mode'
+        elif self.chargingMode == 3:
+            self.chargingModeDesc='Equilizing Charging Mode'
+        elif self.chargingMode == 4:
+            self.chargingModeDesc='Boost Charging Mode'
+        elif self.chargingMode == 5:
+            self.chargingModeDesc='Floating Charging Mode'
+        elif self.chargingMode == 6:
+            self.chargingModeDesc='Current Limiting Charging Mode'
+        else:
+            self.chargingModeDesc="Charging Mode {}".format(str(chargingMode))
+
         self.modbus.close()
