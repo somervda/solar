@@ -1,7 +1,5 @@
 from solarcache import SolarCache
-import json
 
-sc=SolarCache()
-sc.loadCache()
-# sc.writeCache()
-print(sc.cache)
+sc = SolarCache()
+sc.powerSaveLevel = 45
+print(sc.powerSaveLevel)
