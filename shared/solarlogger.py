@@ -17,11 +17,9 @@ class SolarLogger:
         timeGMT = time.gmtime(timeNow)
         logEntry = "{}\t{}\t{}\t{}\n".format(
             round(timeNow), batteryCapacity, solarPower, outputPower)
-        print(logEntry)
         # Write the entry to the log file for the day
         fn = "{}solar{:04d}{:02d}{:02d}.tab".format(
             self.loggingDirectory, timeGMT.tm_year,  timeGMT.tm_mon,  timeGMT.tm_mday)
-        print(fn)
         with open(fn, "a") as logging_file:
             logging_file.write(logEntry)
 

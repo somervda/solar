@@ -1,9 +1,10 @@
 # The renogy class manages the interface to a renogy solar controller.
-# this includes the modbus and rs232 functionality as well as 
-# exposing the renogy data in a single namespace. 
+# this includes the modbus and rs232 functionality as well as
+# exposing the renogy data in a single namespace.
 
 from pymodbus.client.sync import ModbusSerialClient as ModbusClient
 from pymodbus.transaction import ModbusRtuFramer
+
 
 class Renogy:
     def __init__(self):
@@ -19,7 +20,7 @@ class Renogy:
         self.chargingMode = 0
         self.chargingModeDesc = ""
         self.modbus = ModbusClient(method='rtu', port='/dev/serial0', baudrate=9600,
-                      stopbits=1, bytesize=8, parity='N', timeout=5, unit=1)
+                                   stopbits=1, bytesize=8, parity='N', timeout=5, unit=1)
         # Get the first set of data
         self.refresh()
 
@@ -31,7 +32,8 @@ class Renogy:
         self. batteryCapacity = r.registers[0x0]
         self.solarVolts = r.registers[0x7]/10
         self.solarAmps = float(r.registers[0x8])/100
-        self.solarPower = r.registers[0x9]
+        # self.solarPower = r.registers[0x9]
+        self.solarPower = self.solarVolts * self.solarAmps
         self.outputVoltage = r.registers[0x4]/10
         self.outputCurrent = r.registers[0x5]/100
         self.outputCurrent -= .085
@@ -40,18 +42,19 @@ class Renogy:
         if self.chargingMode == 0:
             self.chargingModeDesc = 'Charging Deactivated'
         elif self.chargingMode == 1:
-            self.chargingModeDesc='Charging Activated'
+            self.chargingModeDesc = 'Charging Activated'
         elif self.chargingMode == 2:
-            self.chargingModeDesc='MPPT Charging Mode'
+            self.chargingModeDesc = 'MPPT Charging Mode'
         elif self.chargingMode == 3:
-            self.chargingModeDesc='Equilizing Charging Mode'
+            self.chargingModeDesc = 'Equilizing Charging Mode'
         elif self.chargingMode == 4:
-            self.chargingModeDesc='Boost Charging Mode'
+            self.chargingModeDesc = 'Boost Charging Mode'
         elif self.chargingMode == 5:
-            self.chargingModeDesc='Floating Charging Mode'
+            self.chargingModeDesc = 'Floating Charging Mode'
         elif self.chargingMode == 6:
-            self.chargingModeDesc='Current Limiting Charging Mode'
+            self.chargingModeDesc = 'Current Limiting Charging Mode'
         else:
-            self.chargingModeDesc="Charging Mode {}".format(str(chargingMode))
+            self.chargingModeDesc = "Charging Mode {}".format(
+                str(chargingMode))
 
         self.modbus.close()
