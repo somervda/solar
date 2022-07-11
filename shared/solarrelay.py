@@ -19,7 +19,8 @@ class SolarRelay:
         GPIO.setup(self.webcamOffGPIO, GPIO.OUT)
         GPIO.setup(self.rigGPIO, GPIO.OUT)
 
-    def webcamOn(self):
+    def webcamOn(self, updateExpiry=False):
+        # updateExpiry only used whencalled as a manual power on from web service
         GPIO.output(self.webcamOnGPIO, GPIO.HIGH)
         time.sleep(0.05)
         GPIO.output(self.webcamOnGPIO, GPIO.LOW)
@@ -27,7 +28,10 @@ class SolarRelay:
         # Update solarcache.json info
         sc = SolarCache()
         sc.webcamOn = True
-        sc.webcamExpiry = time.time() + (sc.webcamExpiryMinutes * 60)
+        if updateExpiry:
+            sc.webcamExpiry = time.time() + (sc.webcamExpiryMinutes * 60)
+        else:
+            sc.webcamExpiry = None
         sc.writeCache()
         pass
 
@@ -42,12 +46,16 @@ class SolarRelay:
         sc.webcamExpiry = None
         sc.writeCache()
 
-    def rigOn(self):
+    def rigOn(self, updateExpiry=False):
+        # updateExpiry only used when called as a manual power on from web service
         GPIO.output(self.rigGPIO, GPIO.HIGH)
         # Update solarcache.json info
         sc = SolarCache()
         sc.rigOn = True
-        sc.rigExpiry = time.time() + (sc.rigExpiryMinutes * 60)
+        if updateExpiry:
+            sc.rigExpiry = time.time() + (sc.rigExpiryMinutes * 60)
+        else:
+            sc.rigExpiry = None
         sc.writeCache()
 
     def rigOff(self):

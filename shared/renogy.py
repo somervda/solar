@@ -33,11 +33,11 @@ class Renogy:
         self.solarVolts = r.registers[0x7]/10
         self.solarAmps = float(r.registers[0x8])/100
         # self.solarPower = r.registers[0x9]
-        self.solarPower = self.solarVolts * self.solarAmps
+        self.solarPower = round(self.solarVolts * self.solarAmps, 3)
         self.outputVoltage = r.registers[0x4]/10
         self.outputCurrent = r.registers[0x5]/100
         self.outputCurrent -= .085
-        self.outputPower = self.outputVoltage*self.outputCurrent
+        self.outputPower = round(self.outputVoltage*self.outputCurrent, 3)
         self.chargingMode = r.registers[0x20].to_bytes(2, byteorder="big")[1]
         if self.chargingMode == 0:
             self.chargingModeDesc = 'Charging Deactivated'

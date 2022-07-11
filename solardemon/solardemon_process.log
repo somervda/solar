@@ -1,0 +1,9 @@
+Initialize
+updateState 
+Rule Fired: 
+False
+True
+updateState 1 100 4.865 3.015 Floating Charging Mode
+updateState 2 100 5.88 3.037 Floating Charging Mode
+updateState 3 100 3.892 2.881 Floating Charging Mode
+updateState 4 100 3.892 2.881 Floating Charging Mode

@@ -1,3 +1,3 @@
 from solarrelay import SolarRelay
 sr = SolarRelay()
-sr.webcamOff()
+sr.webcamOn(True)

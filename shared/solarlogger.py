@@ -23,15 +23,20 @@ class SolarLogger:
         with open(fn, "a") as logging_file:
             logging_file.write(logEntry)
 
-    def getLogData(self, begin, end=int(time.time())):
+    def getLogData(self, begin, end=int(time.time()), convertToLocalTime=False, convertToCSV=False):
         # Will get all the data between two times
         # by default will return an array of hourly values starting at begin time (seconds since epoch)
 
         # Get the files needed and merge all the data together
         entries = ""
-        for filedate in range(begin, end, (60*60*24)):
+        # Need to start looking for files from first minute of the begin day
+        startOfBeginDay = begin - \
+            (time.gmtime(begin).tm_hour * 60 * 60) - \
+            (time.gmtime(begin).tm_min * 60) + 60
+        for filedate in range(startOfBeginDay, end, (60*60*24)):
             fn = "{}solar{:04d}{:02d}{:02d}.tab".format(
                 self.loggingDirectory, time.gmtime(filedate).tm_year, time.gmtime(filedate).tm_mon, time.gmtime(filedate).tm_mday)
+            # print("fn:" + fn + " fileDate:" + str(time.gmtime(filedate)))
             if exists(fn):
                 with open(fn, "r") as logging_file:
                     # filter out entries that are not in required range
@@ -39,5 +44,11 @@ class SolarLogger:
                     for line in lines:
                         values = line.split("\t")
                         if float(values[0]) >= begin and float(values[0]) <= end:
+                            if convertToLocalTime:
+                                # update epoch based to to a local user readable time
+                                line = time.strftime("%x %X", time.localtime(
+                                    float(values[0]))) + "\t" + values[1] + "\t" + values[2] + "\t" + values[3]
+                            if convertToCSV:
+                                line = line.replace('\t', ',')
                             entries += line
         return entries
