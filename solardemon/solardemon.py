@@ -63,8 +63,8 @@ def updateState():
     global _lastWebcamRunAtNightRule
     r = Renogy()
     if _loopCnt > 0:
-        print("updateState {} {} {} {} {}".format(
-            _loopCnt, round(r.batteryCapacity, 3), round(r.solarPower, 3), round(r.outputPower, 3), r.chargingModeDesc))
+        print("updateState {} {} {} {} {} {}".format(time.strftime("%x %X", time.localtime(time.time())),
+                                                     _loopCnt, round(r.batteryCapacity, 3), round(r.solarPower, 3), round(r.outputPower, 3), r.chargingModeDesc))
     else:
         print("updateState ")
     # Perform management functions each minute
@@ -112,15 +112,29 @@ def updateState():
             sc.writeCache()
 
     # Check if we need to change the webcam state
+    sr = SolarRelay()
     if sc.webcamOn != webcamRule:
         print("Rule Fired: " + info)
         print(sc.webcamOn)
         print(webcamRule)
-        sr = SolarRelay()
         if webcamRule:
             sr.webcamOn()
         else:
             sr.webcamOff()
+
+    # **** rig power rules  ***
+    if sc.rigExpiry is not None:
+        if sc.rigExpiry > time.time():
+            # Rig expiry still in future, overrides any other rules so leave on
+            if sc.rigOn == False:
+                print("rig On rule")
+                # This shouldn't occur
+                sr.rigOn()
+        else:
+            # Rig is expired
+            print("rig Off rule")
+            if sc.rigOn:
+                sr.rigOff()
 
 
 # ************ Run solardemon ************
