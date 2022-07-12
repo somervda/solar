@@ -11,25 +11,28 @@ class SolarLogger:
     def __init__(self):
         self.loggingDirectory = "../logs/"
 
-    def writeData(self, batteryCapacity, solarPower, outputPower):
+    def writeData(self, batteryCapacity, solarPower, outputPower, modeNC, modeBulk, modeBoost, modeFloat, modeEql, modeOther):
         # writes a record to the current days log
         timeNow = time.time()
         timeGMT = time.gmtime(timeNow)
-        logEntry = "{}\t{}\t{}\t{}\n".format(
-            round(timeNow), batteryCapacity, solarPower, outputPower)
+        logEntry = "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
+            round(timeNow), batteryCapacity, solarPower, outputPower, modeNC, modeBulk, modeBoost, modeFloat, modeEql, modeOther)
         # Write the entry to the log file for the day
         fn = "{}solar{:04d}{:02d}{:02d}.tab".format(
             self.loggingDirectory, timeGMT.tm_year,  timeGMT.tm_mon,  timeGMT.tm_mday)
         with open(fn, "a") as logging_file:
             logging_file.write(logEntry)
 
-    def getLogData(self, begin, end=int(time.time()), convertToLocalTime=False, convertToCSV=False):
+    def getLogData(self, begin, end=int(time.time()), convertToLocalTime=False, convertToCSV=False, addSeriesNames=False):
         # Will get all the data between two times
         # by default will return an array of hourly values starting at begin time (seconds since epoch)
 
         # Get the files needed and merge all the data together
         entries = ""
+        if addSeriesNames:
+            entries = "Time\tBattery %\tSolar Wh\tLoad Wh\tmodeNC\tmodeBulk\tmodeBoost\tmodeFloat\tmodeEql\tmodeOther\n"
         # Need to start looking for files from first minute of the begin day
+        # print("begin:{} end:{}".format(begin,end))
         startOfBeginDay = begin - \
             (time.gmtime(begin).tm_hour * 60 * 60) - \
             (time.gmtime(begin).tm_min * 60) + 60
@@ -45,10 +48,20 @@ class SolarLogger:
                         values = line.split("\t")
                         if float(values[0]) >= begin and float(values[0]) <= end:
                             if convertToLocalTime:
+                                newLine = ""
                                 # update epoch based to to a local user readable time
-                                line = time.strftime("%x %X", time.localtime(
-                                    float(values[0]))) + "\t" + values[1] + "\t" + values[2] + "\t" + values[3]
-                            if convertToCSV:
-                                line = line.replace('\t', ',')
+                                values[0] = time.strftime("%x %X", time.localtime(
+                                    float(values[0])))
+                                for n in range(len(values)):
+                                    newLine += values[n]
+                                    if n < len(values)-1:
+                                        newLine += "\t"
+                                    # else:
+                                    #     newLine += "\n"
+                                line = newLine
+                                # print("*" + newLine + "*")
+
                             entries += line
+        if convertToCSV:
+            entries = entries.replace('\t', ',')
         return entries
