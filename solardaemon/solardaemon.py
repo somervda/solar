@@ -182,5 +182,5 @@ def updateState():
                 sr.rigOff()
 
 
-# ************ Run solardemon ************
+# ************ Run solardaemon ************
 main()

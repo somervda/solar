@@ -9,7 +9,7 @@ from os.path import exists
 
 class SolarLogger:
     def __init__(self):
-        self.loggingDirectory = "../logs/"
+        self.loggingDirectory = "/home/pi/solar/logs/"
 
     def writeData(self, batteryCapacity, solarPower, outputPower, modeNC, modeBulk, modeBoost, modeFloat, modeEql, modeOther):
         # writes a record to the current days log

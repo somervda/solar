@@ -14,7 +14,7 @@ import time
 
 
 class SolarCache:
-    def __init__(self, solarcacheFN="../shared/solarcache.json"):
+    def __init__(self, solarcacheFN="/home/pi/solar/shared/solarcache.json"):
         self.solarcacheFN = solarcacheFN
         self.cache = {}
         if exists(self.solarcacheFN):
