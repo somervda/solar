@@ -147,12 +147,13 @@ def updateState():
                 info += "webcamTurnOffTime:" + str(currentHour) + " "
                 webcamRule = False
     if sc.webcamExpiry is not None:
-        if sc.webcamExpiry > time.time():
-            # Webcam expiry still in future, overrides any other rules so leave on
-            info += "webcamExpiryOn "
+        if sc.webcamExpiry >= time.time():
+            # Webcam expired still in future, overrides any other rules so leave on
+            info += "webcamExpiryForcedOn "
             webcamRule = True
         else:
             # webcam expiry is expired so clear it out (webcam is no longer being forced on)
+            # webcam state is based on the other rules
             sc.webcamExpiry = None
             sc.writeCache()
 
