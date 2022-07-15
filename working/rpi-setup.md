@@ -11,14 +11,19 @@
 9. Do `sudo pip install flask`
 10. Add the following to /etc/rc.local to minimize power usage (turns off LEDs and usb bus)
 
-`sh -c 'echo 0 > /sys/class/leds/led0/brightness'`
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`sh -c 'echo 0 > /sys/class/leds/led0/brightness`
 
-`sh -c 'echo 0 > /sys/class/leds/led1/brightness'`
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`sh -c 'echo 0 > /sys/class/leds/led1/brightness`
 
-`echo '1-1' |tee /sys/bus/usb/drivers/usb/unbind`
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`echo '1-1' |tee /sys/bus/usb/drivers/usb/unbind`
+
+11. add the following to /etc/profile
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`export PYTHONPATH=/home/pi/solar/shared`
 
 ### Set up development environment
 
-12. Create a folder called `~/solar`
-13. In Visual Studio Code add the Remote Development Extension and do the setup shown in Part 3 video https://youtu.be/88nCALFmBRo
-14. Load the code to solar from github https://github.com/somervda/solar
+20. Create a folder called `~/solar`
+21. In Visual Studio Code add the Remote Development Extension and do the setup shown in Part 3 video https://youtu.be/88nCALFmBRo
+22. Load the code to solar from github https://github.com/somervda/solar
+23. Optional `sudo apt install gedit` and set up an `export DISPLAY=<XWindows target IP>:0`
