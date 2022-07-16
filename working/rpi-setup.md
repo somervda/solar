@@ -27,3 +27,5 @@
 21. In Visual Studio Code add the Remote Development Extension and do the setup shown in Part 3 video https://youtu.be/88nCALFmBRo
 22. Load the code to solar from github https://github.com/somervda/solar
 23. Optional `sudo apt install gedit` and set up an `export DISPLAY=<XWindows target IP>:0`
+
+24. Do a `sudo apt install acl -y` to install the setfacl command - needed latter to add www-data user to some of the solar directory permissions
