@@ -13,3 +13,4 @@ It contains these main directories:
 6. `logs` _The daily log files containing the solar controller history_
 
 Information on setting up the Raspberry Pi environment is at https://github.com/somervda/solar/blob/master/working/rpi-setup.md
+Notes on setting up the apache-wsgi-flask configuration is at https://github.com/somervda/solar/blob/master/solarwww/flask-apache2-setup.md
