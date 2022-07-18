@@ -1,6 +1,7 @@
 from flask import Flask
 from renogy import Renogy
 from solarlogger import SolarLogger
+from solarrelay import SolarRelay
 import time
 
 
@@ -30,6 +31,7 @@ def renogystatus():
 # One parameter - will return data starting from the time (epoch seconds) passed
 # two parameters - will return data starting from the first time and ending at the second
 # Note: times are number of seconds since the start of the epoch
+# e.g. http://<host>/solar/renogyhistory/<start>/<end>
 @app.route("/renogyhistory/<start>/<end>")
 @app.route("/renogyhistory/<start>")
 @app.route("/renogyhistory")
@@ -47,3 +49,29 @@ def renogyhistory(start=(time.time() - (24 * 60 * 60)), end=time.time()):
             data[int(entryItems[0])] = entryArray
     # flask converts dictionary objects to json
     return data
+
+
+@app.route("/webcam/<state>")
+def webcam(state="off"):
+    sr = SolarRelay()
+    result = "Unsuccessful"
+    if state == "on":
+        sr.webcamOn(True)
+        result = "Webcam is On"
+    if state == "off":
+        sr.webcamOff()
+        result = "Webcam is Off"
+    return result
+
+
+@app.route("/rig/<state>")
+def rig(state="off"):
+    sr = SolarRelay()
+    result = "Unsuccessful"
+    if state == "on":
+        sr.rigOn(True)
+        result = "Rig is On"
+    if state == "off":
+        sr.rigOff()
+        result = "Rig is Off"
+    return result
