@@ -28,14 +28,14 @@ class Renogy:
         self.modbus.connect()
         r = self.modbus.read_holding_registers(0x100, 35, unit=1)
         # print(r.registers)
-        self.batteryVoltage = r.registers[0x1]/10
-        self. batteryCapacity = r.registers[0x0]
-        self.solarVolts = r.registers[0x7]/10
-        self.solarAmps = float(r.registers[0x8])/100
+        self.batteryVoltage = round(r.registers[0x1]/10, 3)
+        self. batteryCapacity = round(r.registers[0x0], 3)
+        self.solarVolts = round(r.registers[0x7]/10, 3)
+        self.solarAmps = round(float(r.registers[0x8])/100, 3)
         # self.solarPower = r.registers[0x9]
         self.solarPower = round(self.solarVolts * self.solarAmps, 3)
-        self.outputVoltage = r.registers[0x4]/10
-        self.outputCurrent = r.registers[0x5]/100
+        self.outputVoltage = round(r.registers[0x4]/10, 3)
+        self.outputCurrent = round(r.registers[0x5]/100, 3)
         self.outputCurrent -= .085
         self.outputPower = round(self.outputVoltage*self.outputCurrent, 3)
         self.chargingMode = r.registers[0x20].to_bytes(2, byteorder="big")[1]

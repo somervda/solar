@@ -2,6 +2,7 @@ from flask import Flask
 from renogy import Renogy
 from solarlogger import SolarLogger
 from solarrelay import SolarRelay
+from solarcache import SolarCache
 import time
 
 
@@ -75,3 +76,20 @@ def rig(state="off"):
         sr.rigOff()
         result = "Rig is Off"
     return result
+
+
+@app.route("/cache")
+def cache():
+    sc = SolarCache()
+    data = {}
+    data["powerSaveLevel"] = sc.powerSaveLevel
+    data["webcamRunAtNight"] = sc.webcamRunAtNight
+    data["webcamTurnOffTime"] = sc.webcamTurnOffTime
+    data["webcamExpiryMinutes"] = sc.webcamExpiryMinutes
+    data["webcamExpiry"] = sc.webcamExpiry
+    data["webcamOn"] = sc.webcamOn
+    data["rigExpiryMinutes"] = sc.rigExpiryMinutes
+    data["rigExpiry"] = sc.rigExpiry
+    data["rigOn"] = sc.rigOn
+    # flask converts dictionary objects to json
+    return data
