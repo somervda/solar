@@ -21,17 +21,22 @@ def renogystatus():
     data["outputCurrent"] = r.outputCurrent
     data["chargingMode"] = r.chargingMode
     data["chargingModeDesc"] = r.chargingModeDesc
+    # flask converts dictionary objects to json
     return data
 
 
-# renogyhistory has two possable route structures depending on if the end of the time range is passed
-# if only the start time is passed the current time is used as the end time
+# renogyhistory has three possable route structures depending on what parameters are passed
+# No parameters will return last 24 hours of data
+# One parameter - will return data starting from the time (epoch seconds) passed
+# two parameters - will return data starting from the first time and ending at the second
 # Note: times are number of seconds since the start of the epoch
 @app.route("/renogyhistory/<start>/<end>")
 @app.route("/renogyhistory/<start>")
-def renogyhistory(start=str(int(time.time())), end=str(int(time.time()))):
+@app.route("/renogyhistory")
+def renogyhistory(start=(time.time() - (24 * 60 * 60)), end=time.time()):
     sl = SolarLogger()
     log = sl.getLogData(int(start), int(end))
+    # Convert the data from getLogData (Tab delimited) to a dictionary object
     data = {}
     logEntries = log.split("\n")
     for logEntry in logEntries:
@@ -40,4 +45,5 @@ def renogyhistory(start=str(int(time.time())), end=str(int(time.time()))):
             entryArray = [float(entryItems[1]), float(
                 entryItems[2]), float(entryItems[3])]
             data[int(entryItems[0])] = entryArray
+    # flask converts dictionary objects to json
     return data

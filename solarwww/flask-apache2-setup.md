@@ -9,14 +9,23 @@
 	ErrorLog ${APACHE_LOG_DIR}/error.log
 	CustomLog ${APACHE_LOG_DIR}/access.log combined
 
-    WSGIDaemonProcess solarwww user=pi group=pi threads=5 display-name=solarwww
-    WSGIScriptAlias / /home/pi/solar/solarwww/solarwww.wsgi
+	# WSGI section descriibes the WSGI interface to the flask webservices
+	# for the solar app
+	#
+	# user=pi group=pi runs the demon process under this user to make sure
+	#      required directories can be accessed
+	# WSDIScriptAlias or /solar puts all the webservices under the solar route
+	#    and leaves the top level route free for normal web site content (angular app.)
+	# Apache 2.4+ Directory access syntax is "Require all granted"
 
-    <Directory /home/pi/solar/solarwww>
-        WSGIProcessGroup solarwww
-        WSGIApplicationGroup %{GLOBAL}
-        Require all granted
-    </Directory>
+	WSGIDaemonProcess solarwww user=pi group=pi threads=5 display-name=solarwww
+	WSGIScriptAlias /solar /home/pi/solar/solarwww/solarwww.wsgi
+
+	<Directory /home/pi/solar/solarwww>
+		WSGIProcessGroup solarwww
+		WSGIApplicationGroup %{GLOBAL}
+		Require all granted
+	</Directory>
 </VirtualHost>
 ```
 
