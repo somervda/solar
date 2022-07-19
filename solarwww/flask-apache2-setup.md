@@ -14,7 +14,7 @@
 	#
 	# user=pi group=pi runs the demon process under this user to make sure
 	#      required directories can be accessed
-	# WSDIScriptAlias or /solar puts all the webservices under the solar route
+	# WSDIScriptAlias or /solar puts all the webservices under the http://<host>/solar route
 	#    and leaves the top level route free for normal web site content (angular app.)
 	# Apache 2.4+ Directory access syntax is "Require all granted"
 

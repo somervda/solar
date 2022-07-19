@@ -55,27 +55,33 @@ def renogyhistory(start=(time.time() - (24 * 60 * 60)), end=time.time()):
 @app.route("/webcam/<state>")
 def webcam(state="off"):
     sr = SolarRelay()
-    result = "Unsuccessful"
+    validRequest = False
     if state == "on":
         sr.webcamOn(True)
-        result = "Webcam is On"
+        validRequest = True
     if state == "off":
         sr.webcamOff()
-        result = "Webcam is Off"
-    return result
+        validRequest = True
+    if validRequest:
+        return "Ok", 200
+    else:
+        return "Not Implemented", 501
 
 
 @app.route("/rig/<state>")
 def rig(state="off"):
     sr = SolarRelay()
-    result = "Unsuccessful"
+    validRequest = False
     if state == "on":
         sr.rigOn(True)
-        result = "Rig is On"
+        validRequest = True
     if state == "off":
         sr.rigOff()
-        result = "Rig is Off"
-    return result
+        validRequest = True
+    if validRequest:
+        return ""
+    else:
+        return "Not Implemented", 501
 
 
 @app.route("/cache")
@@ -93,3 +99,83 @@ def cache():
     data["rigOn"] = sc.rigOn
     # flask converts dictionary objects to json
     return data
+
+# Cache variables update services
+
+
+@app.route("/cache/powerSaveLevel/<value>")
+def powerSaveLevel(value):
+    # Check the value is an integer
+    try:
+        _value = int(value)
+    except:
+        return "Value is not integer.", 400
+    if _value < 0 or _value > 100:
+        return "Invalid Value: Must be 0-100", 400
+    sc = SolarCache()
+    sc.powerSaveLevel = _value
+    sc.writeCache()
+    return ""
+
+
+@app.route("/cache/webcamTurnOffTime/<value>")
+def webcamTurnOffTime(value):
+    sc = SolarCache()
+    if value == "None":
+        # Special value to reset the value
+        sc.webcamTurnOffTime = None
+        sc.writeCache()
+        return ""
+    # Check the value is an integer
+    try:
+        _value = int(value)
+    except:
+        return "Value is not integer.", 400
+    if _value < 0 or (_value > 6 and _value < 18) or _value > 23:
+        return "Invalid Value: Must be an hour between 6PM and 6AM (18-23 or 0-6)", 400
+    sc.webcamTurnOffTime = _value
+    sc.writeCache()
+    return ""
+
+
+@app.route("/cache/webcamRunAtNight/<value>")
+def webcamRunAtNight(value):
+    sc = SolarCache()
+    if not (value == "True" or value == "False"):
+        return "Value is not True or False.", 400
+    if value == "True":
+        sc.webcamRunAtNight = True
+    else:
+        sc.webcamRunAtNight = False
+    sc.writeCache()
+    return ""
+
+
+@app.route("/cache/webcamExpiryMinutes/<value>")
+def webcamExpiryMinutes(value):
+    # Check the value is an integer
+    try:
+        _value = int(value)
+    except:
+        return "Value is not integer.", 400
+    if _value <= 0 or _value > 180:
+        return "Invalid Value: Must be 1-180 minutes", 400
+    sc = SolarCache()
+    sc.webcamExpiryMinutes = _value
+    sc.writeCache()
+    return ""
+
+
+@app.route("/cache/rigExpiryMinutes/<value>")
+def rigExpiryMinutes(value):
+    # Check the value is an integer
+    try:
+        _value = int(value)
+    except:
+        return "Value is not integer.", 400
+    if _value <= 0 or _value > 180:
+        return "Invalid Value: Must be 1-180 minutes", 400
+    sc = SolarCache()
+    sc.rigExpiryMinutes = _value
+    sc.writeCache()
+    return ""
