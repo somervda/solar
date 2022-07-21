@@ -1,4 +1,5 @@
 shared/__pycache__/
 solarwww/__pycache__/
 logs/
+solarui/
 solardaemon/solardaemon_process.log

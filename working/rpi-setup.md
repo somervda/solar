@@ -11,15 +11,24 @@
 9. Do `sudo pip install flask`
 10. Add the following to /etc/rc.local to minimize power usage (turns off LEDs and usb bus)
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`sh -c 'echo 0 > /sys/class/leds/led0/brightness`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`sh -c 'echo 0 > /sys/class/leds/led1/brightness`
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`echo '1-1' |tee /sys/bus/usb/drivers/usb/unbind`
+```
+    sudo sh -c 'echo 0 > /sys/class/leds/led0/brightness'
+    sudo sh -c 'echo 0 > /sys/class/leds/led1/brightness'
+    echo '1-1' |sudo tee /sys/bus/usb/drivers/usb/unbind
+```
 
 11. add the following to /etc/profile
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`export PYTHONPATH=/home/pi/solar/shared`
+```
+    export PYTHONPATH=/home/pi/solar/shared
+```
+
+12. Add this to dtoverlay=disable-bt (turns off bluetooth)
+
+```
+    [All]
+    dtoverlay=disable-bt
+```
 
 ### Set up development environment
 

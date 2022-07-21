@@ -37,6 +37,12 @@ def renogystatus():
 @app.route("/renogyhistory/<start>")
 @app.route("/renogyhistory")
 def renogyhistory(start=(time.time() - (24 * 60 * 60)), end=time.time()):
+    # Check the start and end values are integers
+    try:
+        _start = int(start)
+        _end = int(end)
+    except:
+        return "Start/End values not integer(s).", 400
     sl = SolarLogger()
     log = sl.getLogData(int(start), int(end))
     # Convert the data from getLogData (Tab delimited) to a dictionary object
@@ -53,35 +59,27 @@ def renogyhistory(start=(time.time() - (24 * 60 * 60)), end=time.time()):
 
 
 @app.route("/webcam/<state>")
-def webcam(state="off"):
+def webcam(state):
+    if not (state == "on" or state == "off"):
+        return "Webcam value must be on or off", 400
     sr = SolarRelay()
-    validRequest = False
     if state == "on":
         sr.webcamOn(True)
-        validRequest = True
     if state == "off":
         sr.webcamOff()
-        validRequest = True
-    if validRequest:
-        return "Ok", 200
-    else:
-        return "Not Implemented", 501
+    return ""
 
 
 @app.route("/rig/<state>")
-def rig(state="off"):
+def rig(state):
+    if not (state == "on" or state == "off"):
+        return "Rig value must be on or off", 400
     sr = SolarRelay()
-    validRequest = False
     if state == "on":
         sr.rigOn(True)
-        validRequest = True
     if state == "off":
         sr.rigOff()
-        validRequest = True
-    if validRequest:
-        return ""
-    else:
-        return "Not Implemented", 501
+    return ""
 
 
 @app.route("/cache")

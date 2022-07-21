@@ -14,12 +14,12 @@
 	#
 	# user=pi group=pi runs the demon process under this user to make sure
 	#      required directories can be accessed
-	# WSDIScriptAlias or /solar puts all the webservices under the http://<host>/solar route
+	# WSDIScriptAlias or /api puts all the webservices under the /api route
 	#    and leaves the top level route free for normal web site content (angular app.)
 	# Apache 2.4+ Directory access syntax is "Require all granted"
 
 	WSGIDaemonProcess solarwww user=pi group=pi threads=5 display-name=solarwww
-	WSGIScriptAlias /solar /home/pi/solar/solarwww/solarwww.wsgi
+	WSGIScriptAlias /api /home/pi/solar/solarwww/solarwww.wsgi
 
 	<Directory /home/pi/solar/solarwww>
 		WSGIProcessGroup solarwww
