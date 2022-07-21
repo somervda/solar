@@ -1,1 +1,1 @@
-{"powerSaveLevel": 50, "webcamRunAtNight": false, "webcamTurnOffTime": null, "webcamExpiryMinutes": 30, "webcamExpiry": null, "webcamOn": true, "rigExpiryMinutes": 30, "rigExpiry": null, "rigOn": false}
+{"powerSaveLevel": 50, "webcamRunAtNight": false, "webcamTurnOffTime": null, "webcamExpiryMinutes": 30, "webcamExpiry": null, "webcamOn": false, "rigExpiryMinutes": 30, "rigExpiry": null, "rigOn": false}

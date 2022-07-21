@@ -123,20 +123,14 @@ def updateState():
     # Set the basic rule of the webcam is normally on
     webcamRule = True
     info = ""
-    # Use a sample size of more than 5 for renogy data (cut down false positives on status)
-    if _loopCnt > 5:
-        if _batteryCapacity/_loopCnt < sc.powerSaveLevel:
-            # Battery Power is too low, turn off webcam
-            info += "batteryCapacity "
-            webcamRule = False
-        if not sc.webcamRunAtNight and _solarPower/_loopCnt < 0.01:
-            # Looks like its night time because no power being generated
-            info += "webcamRunAtNight "
-            webcamRule = False
-    else:
-        # No determination can be made for the history based rules so apply last values
-        if _lastWebcamRunAtNightRule == False or _lastBatteryCapacityRule == False:
-            webcamRule = False
+    if r.batteryCapacity < sc.powerSaveLevel:
+        # Battery Power is too low, turn off webcam
+        info += "batteryCapacity "
+        webcamRule = False
+    if not sc.webcamRunAtNight and r.chargingMode == 0:
+        # Looks like its night time because no power being generated
+        info += "webcamRunAtNight "
+        webcamRule = False
     if sc.webcamTurnOffTime is not None:
         currentHour = time.localtime(time.time()).tm_hour
         # Turn off time only valid between 6PM and 6AM (Note - based on local times, not gmt time)
