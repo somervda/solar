@@ -1,5 +1,7 @@
 ## Guide to setting up the Raspberry Pi for the Solar System
 
+Includes changes to reduce power usage (Turn off LEDS, turn of USB, Turn off HDMI and Blue tooth)
+
 1. Use the raspberry pi imager () https://www.raspberrypi.com/software/ ) to set up the SD card for the RPI. I used Raspberry Pi OS (Lite) 32 bit. I opened the imager options and set the host name (solar in my case) and enabled ssh with the password option. Set the user/password (I used the pi user as my main one). Enter the WiFi SID and password you want to use (Because the solar system is remote you need to have the rpi set up for wireless internet)
 2. Put the SD card in the RPI and plug in power.
 3. Check you can connect to the RPI using ssh ( i.e. `ssh pi@<hostname>`)
@@ -12,8 +14,8 @@
 10. Add the following to /etc/rc.local to minimize power usage (turns off LEDs and usb bus)
 
 ```
-    sudo sh -c 'echo 0 > /sys/class/leds/led0/brightness'
-    sudo sh -c 'echo 0 > /sys/class/leds/led1/brightness'
+    sh -c 'echo 0 > /sys/class/leds/led0/brightness'
+    sh -c 'echo 0 > /sys/class/leds/led1/brightness'
     echo '1-1' |sudo tee /sys/bus/usb/drivers/usb/unbind
 ```
 
@@ -23,11 +25,23 @@
     export PYTHONPATH=/home/pi/solar/shared
 ```
 
-12. Add this to dtoverlay=disable-bt (turns off bluetooth)
+12. Add this to /boot/config.txt dtoverlay=disable-bt (turns off bluetooth, Place under the [All] section)
 
 ```
     [All]
     dtoverlay=disable-bt
+```
+
+also change the dtoverlay driver to vc4-fkms-v3d (The one that gets loaded in latest RPI OS doesn't work with tvservice)
+
+```
+   dtoverlay=vc4-fkms-v3d
+```
+
+13. Add the following to /etc/rc.local to minimize power usage (turns off the HDMI power)
+
+```
+    sh -c '/usr/bin/tvservice -o'
 ```
 
 ### Set up development environment

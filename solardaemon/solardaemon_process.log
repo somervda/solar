@@ -1,4 +1,9 @@
 Initialize
 updateState 
-updateState 07/20/22 21:49:12 1 85 0.0 0.96 Charging Deactivated
-updateState 07/20/22 21:50:12 2 85 0.0 1.216 Charging Deactivated
+Rule Fired: 
+False
+True
+updateState 07/21/22 12:33:53 1 100 3.892 2.706 Floating Charging Mode
+updateState 07/21/22 12:34:53 2 100 5.934 2.726 Floating Charging Mode
+updateState 07/21/22 12:35:53 3 100 5.977 2.881 Floating Charging Mode
+updateState 07/21/22 12:36:54 4 100 4.865 2.881 Floating Charging Mode

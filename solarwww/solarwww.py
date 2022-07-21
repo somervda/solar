@@ -47,6 +47,8 @@ def renogyhistory(start=(time.time() - (24 * 60 * 60)), end=time.time()):
     log = sl.getLogData(int(start), int(end))
     # Convert the data from getLogData (Tab delimited) to a dictionary object
     data = {}
+    # data["start"] = start
+    # data["end"] = end
     logEntries = log.split("\n")
     for logEntry in logEntries:
         entryItems = logEntry.split("\t")
