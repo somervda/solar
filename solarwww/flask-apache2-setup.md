@@ -9,6 +9,10 @@
 	ErrorLog ${APACHE_LOG_DIR}/error.log
 	CustomLog ${APACHE_LOG_DIR}/access.log combined
 
+	# allow CORS
+	# see https://ubiq.co/tech-blog/enable-cors-apache-web-server/
+	Header add Access-Control-Allow-Origin "*"
+
 	# WSGI section descriibes the WSGI interface to the flask webservices
 	# for the solar app
 	#
@@ -50,4 +54,10 @@ sudo /etc/init.d/apache2 reload
 ```
 tail /var/log/apache2/error.log
 tail /var/log/apache2/access.log
+```
+
+5. Enable Apache headers (To support CORS requests while working on solarui)
+
+```
+sudo a2enmod headers
 ```
