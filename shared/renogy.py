@@ -38,8 +38,7 @@ class Renogy:
             # self.solarPower = r.registers[0x9]
             self.solarPower = round(self.solarVolts * self.solarAmps, 3)
             self.outputVoltage = round(r.registers[0x4]/10, 3)
-            self.outputCurrent = round(r.registers[0x5]/100, 3)
-            self.outputCurrent -= .085
+            self.outputCurrent = round((r.registers[0x5]/100) - 0.085, 3)
             self.outputPower = round(self.outputVoltage*self.outputCurrent, 3)
             self.chargingMode = r.registers[0x20].to_bytes(2, byteorder="big")[
                 1]
