@@ -4,6 +4,7 @@ from solarlogger import SolarLogger
 from solarrelay import SolarRelay
 from solarcache import SolarCache
 import time
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -43,12 +44,13 @@ def renogyhistory(start=(time.time() - (24 * 60 * 60)), end=time.time()):
         _end = int(end)
     except:
         return "Start/End values not integer(s).", 400
+    with open("/home/pi/solar/logs/solarwww.log", "a") as logging_file:
+        logging_file.write("{} start:{} end:{}\n".format(
+            datetime.now(), start, end))
     sl = SolarLogger()
     log = sl.getLogData(int(start), int(end))
     # Convert the data from getLogData (Tab delimited) to a dictionary object
     data = {}
-    # data["start"] = start
-    # data["end"] = end
     logEntries = log.split("\n")
     for logEntry in logEntries:
         entryItems = logEntry.split("\t")
