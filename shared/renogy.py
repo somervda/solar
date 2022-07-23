@@ -27,34 +27,38 @@ class Renogy:
     def refresh(self):
         self.modbus.connect()
         r = self.modbus.read_holding_registers(0x100, 35, unit=1)
-        # print(r.registers)
-        self.batteryVoltage = round(r.registers[0x1]/10, 3)
-        self. batteryCapacity = round(r.registers[0x0], 3)
-        self.solarVolts = round(r.registers[0x7]/10, 3)
-        self.solarAmps = round(float(r.registers[0x8])/100, 3)
-        # self.solarPower = r.registers[0x9]
-        self.solarPower = round(self.solarVolts * self.solarAmps, 3)
-        self.outputVoltage = round(r.registers[0x4]/10, 3)
-        self.outputCurrent = round(r.registers[0x5]/100, 3)
-        self.outputCurrent -= .085
-        self.outputPower = round(self.outputVoltage*self.outputCurrent, 3)
-        self.chargingMode = r.registers[0x20].to_bytes(2, byteorder="big")[1]
-        if self.chargingMode == 0:
-            self.chargingModeDesc = 'Charging Deactivated'
-        elif self.chargingMode == 1:
-            self.chargingModeDesc = 'Charging Activated'
-        elif self.chargingMode == 2:
-            self.chargingModeDesc = 'MPPT Charging Mode'
-        elif self.chargingMode == 3:
-            self.chargingModeDesc = 'Equilizing Charging Mode'
-        elif self.chargingMode == 4:
-            self.chargingModeDesc = 'Boost Charging Mode'
-        elif self.chargingMode == 5:
-            self.chargingModeDesc = 'Floating Charging Mode'
-        elif self.chargingMode == 6:
-            self.chargingModeDesc = 'Current Limiting Charging Mode'
+        if r is None:
+            print("Refresh failed - r is None")
         else:
-            self.chargingModeDesc = "Charging Mode {}".format(
-                str(chargingMode))
+            # print(r.registers)
+            self.batteryVoltage = round(r.registers[0x1]/10, 3)
+            self. batteryCapacity = round(r.registers[0x0], 3)
+            self.solarVolts = round(r.registers[0x7]/10, 3)
+            self.solarAmps = round(float(r.registers[0x8])/100, 3)
+            # self.solarPower = r.registers[0x9]
+            self.solarPower = round(self.solarVolts * self.solarAmps, 3)
+            self.outputVoltage = round(r.registers[0x4]/10, 3)
+            self.outputCurrent = round(r.registers[0x5]/100, 3)
+            self.outputCurrent -= .085
+            self.outputPower = round(self.outputVoltage*self.outputCurrent, 3)
+            self.chargingMode = r.registers[0x20].to_bytes(2, byteorder="big")[
+                1]
+            if self.chargingMode == 0:
+                self.chargingModeDesc = 'Charging Deactivated'
+            elif self.chargingMode == 1:
+                self.chargingModeDesc = 'Charging Activated'
+            elif self.chargingMode == 2:
+                self.chargingModeDesc = 'MPPT Charging Mode'
+            elif self.chargingMode == 3:
+                self.chargingModeDesc = 'Equilizing Charging Mode'
+            elif self.chargingMode == 4:
+                self.chargingModeDesc = 'Boost Charging Mode'
+            elif self.chargingMode == 5:
+                self.chargingModeDesc = 'Floating Charging Mode'
+            elif self.chargingMode == 6:
+                self.chargingModeDesc = 'Current Limiting Charging Mode'
+            else:
+                self.chargingModeDesc = "Charging Mode {}".format(
+                    str(chargingMode))
 
         self.modbus.close()
