@@ -404,3 +404,20 @@ updateState 07/23/22 14:47:57 47 91 1.876 3.055 Boost Charging Mode
 updateState 07/23/22 14:48:57 48 91 1.89 2.925 Boost Charging Mode
 updateState 07/23/22 14:49:57 49 92 1.904 2.925 Boost Charging Mode
 updateState 07/23/22 14:50:57 50 92 1.89 2.925 Boost Charging Mode
+updateState 07/23/22 14:51:57 51 92 1.89 2.925 Boost Charging Mode
+updateState 07/23/22 14:52:57 52 92 1.89 3.055 Boost Charging Mode
+updateState 07/23/22 14:53:58 53 92 1.89 2.795 Boost Charging Mode
+updateState 07/23/22 14:54:58 54 92 1.89 2.925 Boost Charging Mode
+updateState 07/23/22 14:55:58 55 92 1.89 2.925 Boost Charging Mode
+Traceback (most recent call last):
+  File "/home/pi/solar/solardaemon/solardaemon.py", line 181, in <module>
+    main()
+  File "/home/pi/solar/solardaemon/solardaemon.py", line 30, in main
+    updateState()
+  File "/home/pi/solar/solardaemon/solardaemon.py", line 91, in updateState
+    r = Renogy()
+  File "/home/pi/solar/shared/renogy.py", line 25, in __init__
+    self.refresh()
+  File "/home/pi/solar/shared/renogy.py", line 34, in refresh
+    self.batteryVoltage = round(r.registers[0x1]/10, 3)
+AttributeError: 'ModbusIOException' object has no attribute 'registers'

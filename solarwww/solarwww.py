@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from renogy import Renogy
 from solarlogger import SolarLogger
 from solarrelay import SolarRelay
@@ -50,16 +50,17 @@ def renogyhistory(start=(time.time() - (24 * 60 * 60)), end=time.time()):
     sl = SolarLogger()
     log = sl.getLogData(int(start), int(end))
     # Convert the data from getLogData (Tab delimited) to a dictionary object
-    data = {}
+    data = []
     logEntries = log.split("\n")
     for logEntry in logEntries:
         entryItems = logEntry.split("\t")
         if len(entryItems) >= 4:
-            entryArray = [float(entryItems[1]), float(
+            entryArray = [int(entryItems[0]), float(entryItems[1]), float(
                 entryItems[2]), float(entryItems[3])]
-            data[int(entryItems[0])] = entryArray
+            data.append(entryArray)
+            # data[int(entryItems[0])] = entryArray
     # flask converts dictionary objects to json
-    return data
+    return jsonify(data)
 
 
 @app.route("/webcam/<state>")
