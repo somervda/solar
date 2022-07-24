@@ -27,10 +27,7 @@ class Renogy:
     def refresh(self):
         self.modbus.connect()
         r = self.modbus.read_holding_registers(0x100, 35, unit=1)
-        if r is None:
-            print("Refresh failed - r is None")
-        else:
-            # print(r.registers)
+        try:
             self.batteryVoltage = round(r.registers[0x1]/10, 3)
             self. batteryCapacity = round(r.registers[0x0], 3)
             self.solarVolts = round(r.registers[0x7]/10, 3)
@@ -39,7 +36,8 @@ class Renogy:
             self.solarPower = round(self.solarVolts * self.solarAmps, 3)
             self.outputVoltage = round(r.registers[0x4]/10, 3)
             self.outputCurrent = round((r.registers[0x5]/100) - 0.085, 3)
-            self.outputPower = round(self.outputVoltage*self.outputCurrent, 3)
+            self.outputPower = round(
+                self.outputVoltage*self.outputCurrent, 3)
             self.chargingMode = r.registers[0x20].to_bytes(2, byteorder="big")[
                 1]
             if self.chargingMode == 0:
@@ -59,5 +57,7 @@ class Renogy:
             else:
                 self.chargingModeDesc = "Charging Mode {}".format(
                     str(chargingMode))
+        except BaseException as ex:
+            print("Refresh error: " + str(ex))
 
         self.modbus.close()

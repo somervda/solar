@@ -37,13 +37,17 @@ def renogystatus():
 @app.route("/renogyhistory/<start>/<end>")
 @app.route("/renogyhistory/<start>")
 @app.route("/renogyhistory")
-def renogyhistory(start=(time.time() - (24 * 60 * 60)), end=time.time()):
+def renogyhistory(start=0, end=0):
     # Check the start and end values are integers
     try:
         _start = int(start)
         _end = int(end)
     except:
         return "Start/End values not integer(s).", 400
+    if start == 0:
+        start = (time.time() - (24 * 60 * 60))
+    if end == 0:
+        end = time.time()
     with open("/home/pi/solar/logs/solarwww.log", "a") as logging_file:
         logging_file.write("{} start:{} end:{}\n".format(
             datetime.now(), start, end))
