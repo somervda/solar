@@ -19,9 +19,10 @@ Includes changes to reduce power usage (Turn off LEDS, turn of USB, Turn off HDM
     echo '1-1' |sudo tee /sys/bus/usb/drivers/usb/unbind
 ```
 
-11. add the following to /etc/profile or /etc/profile.d/<somefile>.sh
+11. add the following to a /etc/profile.d/solarpath.sh
 
 ```
+export PATH=$PATH:/home/pi/local/bin:/usr/local/lib/python3.9/site-packages
 export PYTHONPATH=/home/pi/solar/shared:/home/pi/hamlib/hamlib-4.4/bindings:/home/pi/hamlib/hamlib-4.4/bindings/.libs
 ```
 
