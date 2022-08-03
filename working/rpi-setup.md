@@ -19,10 +19,10 @@ Includes changes to reduce power usage (Turn off LEDS, turn of USB, Turn off HDM
     echo '1-1' |sudo tee /sys/bus/usb/drivers/usb/unbind
 ```
 
-11. add the following to /etc/profile
+11. add the following to /etc/profile or /etc/profile.d/<somefile>.sh
 
 ```
-    export PYTHONPATH=/home/pi/solar/shared
+export PYTHONPATH=/home/pi/solar/shared:/home/pi/hamlib/hamlib-4.4/bindings:/home/pi/hamlib/hamlib-4.4/bindings/.libs
 ```
 
 12. Add this to /boot/config.txt dtoverlay=disable-bt (turns off bluetooth, Place under the [All] section)
