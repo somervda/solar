@@ -16,7 +16,7 @@ Includes changes to reduce power usage (Turn off LEDS, turn of USB, Turn off HDM
 ```
     sh -c 'echo 0 > /sys/class/leds/led0/brightness'
     sh -c 'echo 0 > /sys/class/leds/led1/brightness'
-    echo '1-1' |sudo tee /sys/bus/usb/drivers/usb/unbind
+    echo '1-1' | tee /sys/bus/usb/drivers/usb/unbind
 ```
 
 11. add the following to a /etc/profile.d/solarpath.sh
@@ -43,6 +43,13 @@ also change the dtoverlay driver to vc4-fkms-v3d (The one that gets loaded in la
 
 ```
     sh -c '/usr/bin/tvservice -o'
+```
+
+14. Open up permissions for writing to the usb drivers (so solardeamon can turn usb on and off)
+
+```
+sudo chmod o+w /sys/bus/usb/drivers/usb/unbind
+sudo chmod o+w /sys/bus/usb/drivers/usb/bind
 ```
 
 ### Set up development environment
