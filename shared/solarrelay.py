@@ -4,6 +4,7 @@
 from solarcache import SolarCache
 import RPi.GPIO as GPIO
 import time
+import os
 
 
 class SolarRelay:
@@ -49,6 +50,8 @@ class SolarRelay:
     def rigOn(self, updateExpiry=False):
         # updateExpiry only used when called as a manual power on from web service
         GPIO.output(self.rigGPIO, GPIO.HIGH)
+        # turn on the USB hardware on the RPI
+        os.system("echo '1-1' |sudo tee /sys/bus/usb/drivers/usb/bind")
         # Update solarcache.json info
         sc = SolarCache()
         sc.rigOn = True
@@ -60,6 +63,8 @@ class SolarRelay:
 
     def rigOff(self):
         GPIO.output(self.rigGPIO, GPIO.LOW)
+        # turn off the USB hardware on the RPI
+        os.system("echo '1-1' |sudo tee /sys/bus/usb/drivers/usb/unbind")
         # Update solarcache.json info
         sc = SolarCache()
         sc.rigOn = False
