@@ -51,7 +51,7 @@ class SolarRelay:
         # updateExpiry only used when called as a manual power on from web service
         GPIO.output(self.rigGPIO, GPIO.HIGH)
         # turn on the USB hardware on the RPI
-        # os.system("echo '1-1' | tee /sys/bus/usb/drivers/usb/bind")
+        # Improves on : os.system("echo '1-1' | tee /sys/bus/usb/drivers/usb/bind")
         with open("/sys/bus/usb/drivers/usb/bind", "w") as usb_bind:
             usb_bind.write("1-1")
         # Update solarcache.json info
@@ -66,7 +66,7 @@ class SolarRelay:
     def rigOff(self):
         GPIO.output(self.rigGPIO, GPIO.LOW)
         # turn off the USB hardware on the RPI
-        # os.system("echo '1-1' | tee /sys/bus/usb/drivers/usb/unbind")
+        # Improves on: os.system("echo '1-1' | tee /sys/bus/usb/drivers/usb/unbind")
         with open("/sys/bus/usb/drivers/usb/unbind", "w") as usb_unbind:
             usb_unbind.write("1-1")
         # Update solarcache.json info
