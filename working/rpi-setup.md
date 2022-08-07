@@ -11,12 +11,15 @@ Includes changes to reduce power usage (Turn off LEDS, turn of USB, Turn off HDM
 7. Do `sudo apt install libapache2-mod-wsgi-py3 -y`
 8. Do `sudo apt install python3-pip`
 9. Do `sudo pip install flask`
-10. Add the following to /etc/rc.local to minimize power usage (turns off LEDs and usb bus)
+10. Add the following to /etc/rc.local to minimize power usage . the first two lines turn off the LEDs on the RPI and the
+    next two will change the permissions on the usb bind/unbind references so the usb hardware can be turned on and off.
 
 ```
     sh -c 'echo 0 > /sys/class/leds/led0/brightness'
     sh -c 'echo 0 > /sys/class/leds/led1/brightness'
-    echo '1-1' | tee /sys/bus/usb/drivers/usb/unbind
+
+    chmod o+w /sys/bus/usb/drivers/usb/unbind
+    chmod o+w /sys/bus/usb/drivers/usb/bind
 ```
 
 11. add the following to a /etc/profile.d/solarpath.sh
@@ -43,13 +46,6 @@ also change the dtoverlay driver to vc4-fkms-v3d (The one that gets loaded in la
 
 ```
     sh -c '/usr/bin/tvservice -o'
-```
-
-14. Open up permissions for writing to the usb drivers (so solarwww can turn usb on and off)
-
-```
-sudo chmod o+w /sys/bus/usb/drivers/usb/unbind
-sudo chmod o+w /sys/bus/usb/drivers/usb/bind
 ```
 
 ### Set up development environment
