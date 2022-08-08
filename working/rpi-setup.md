@@ -48,6 +48,11 @@ also change the dtoverlay driver to vc4-fkms-v3d (The one that gets loaded in la
     sh -c '/usr/bin/tvservice -o'
 ```
 
+14. Install psutil - solar uses it to manage the rigctld daemon
+```
+    sudo pip install psutil
+```
+
 ### Set up development environment
 
 20. Create a folder called `~/solar`

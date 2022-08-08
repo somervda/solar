@@ -1,0 +1,4 @@
+rig_open: error = Communication timed out
+kenwood_open: no response from rig
+kenwood.c(872):kenwood_open return(-5)
+rig.c(1031):rig_open return(-5) /dev/ttyUSB0 Success 

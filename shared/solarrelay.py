@@ -5,6 +5,7 @@ from solarcache import SolarCache
 import RPi.GPIO as GPIO
 import time
 import os
+import psutil
 
 
 class SolarRelay:
@@ -49,11 +50,21 @@ class SolarRelay:
 
     def rigOn(self, updateExpiry=False):
         # updateExpiry only used when called as a manual power on from web service
+
+        # Turn on the rig relay
         GPIO.output(self.rigGPIO, GPIO.HIGH)
         # turn on the USB hardware on the RPI
         # Improves on : os.system("echo '1-1' | tee /sys/bus/usb/drivers/usb/bind")
         with open("/sys/bus/usb/drivers/usb/bind", "w") as usb_bind:
             usb_bind.write("1-1")
+        # Wait 1 second for the rig and usb to power on , then fire up rigctld
+        time.sleep(1)
+        os.system("nohup rigctld -m 2028 -s 38400 -r /dev/ttyUSB0 &")
+        # Wait for 1 second and check that rigctl started
+        time.sleep(1)
+        for proc in psutil.process_iter(['pid', 'name']):
+            if proc.info["name"] == "rigctld" :
+                print(proc.info)
         # Update solarcache.json info
         sc = SolarCache()
         sc.rigOn = True
@@ -64,11 +75,17 @@ class SolarRelay:
         sc.writeCache()
 
     def rigOff(self):
-        GPIO.output(self.rigGPIO, GPIO.LOW)
+        # find and kill the rigctld daemon
+        for proc in psutil.process_iter(['pid', 'name']):
+            if proc.info["name"] == "rigctld" :
+                proc.kill()
+
         # turn off the USB hardware on the RPI
         # Improves on: os.system("echo '1-1' | tee /sys/bus/usb/drivers/usb/unbind")
         with open("/sys/bus/usb/drivers/usb/unbind", "w") as usb_unbind:
             usb_unbind.write("1-1")
+        # Turn off the rig relay
+        GPIO.output(self.rigGPIO, GPIO.LOW)
         # Update solarcache.json info
         sc = SolarCache()
         sc.rigOn = False
