@@ -35,7 +35,6 @@ class SolarRelay:
         else:
             sc.webcamExpiry = None
         sc.writeCache()
-        pass
 
     def webcamOff(self):
         GPIO.output(self.webcamOffGPIO, GPIO.HIGH)
@@ -50,7 +49,6 @@ class SolarRelay:
 
     def rigOn(self, updateExpiry=False):
         # updateExpiry only used when called as a manual power on from web service
-
         # Turn on the rig relay
         GPIO.output(self.rigGPIO, GPIO.HIGH)
         # turn on the USB hardware on the RPI
@@ -59,13 +57,35 @@ class SolarRelay:
             usb_bind.write("1-1")
         # Wait 1 second for the rig and usb to power on , then fire up rigctld
         time.sleep(1)
-        os.system("nohup rigctld -m 2028 -s 38400 -r /dev/ttyUSB0 &")
+        if not os.path.exists("/dev/ttyUSB0"):
+            # Failed to find /dev/ttyUSB0 serial port
+            # turn off the USB hardware on the RPI
+            with open("/sys/bus/usb/drivers/usb/unbind", "w") as usb_unbind:
+                usb_unbind.write("1-1")
+            # Turn off the rig relay
+            GPIO.output(self.rigGPIO, GPIO.LOW)
+            return "/dev/ttyUSB0 not found"
+
+        #  Start rigctld
+        os.system(
+            "nohup /home/pi/local/bin/rigctld -m 2028 -s 38400 -r /dev/ttyUSB0 &")
         # Wait for 1 second and check that rigctl started
         time.sleep(1)
+        rigctldIsRunning = False
         for proc in psutil.process_iter(['pid', 'name']):
-            if proc.info["name"] == "rigctld" :
+            if proc.info["name"] == "rigctld":
+                rigctldIsRunning = True
                 print(proc.info)
-        # Update solarcache.json info
+        if not rigctldIsRunning:
+            # Failed to run rigctld
+            # turn off the USB hardware on the RPI
+            with open("/sys/bus/usb/drivers/usb/unbind", "w") as usb_unbind:
+                usb_unbind.write("1-1")
+            # Turn off the rig relay
+            GPIO.output(self.rigGPIO, GPIO.LOW)
+            return "rigctld could not be started"
+
+        # Success: Update solarcache.json info
         sc = SolarCache()
         sc.rigOn = True
         if updateExpiry:
@@ -73,13 +93,13 @@ class SolarRelay:
         else:
             sc.rigExpiry = None
         sc.writeCache()
+        return ""
 
     def rigOff(self):
         # find and kill the rigctld daemon
         for proc in psutil.process_iter(['pid', 'name']):
-            if proc.info["name"] == "rigctld" :
+            if proc.info["name"] == "rigctld":
                 proc.kill()
-
         # turn off the USB hardware on the RPI
         # Improves on: os.system("echo '1-1' | tee /sys/bus/usb/drivers/usb/unbind")
         with open("/sys/bus/usb/drivers/usb/unbind", "w") as usb_unbind:

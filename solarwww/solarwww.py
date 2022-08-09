@@ -85,10 +85,14 @@ def rig(state):
         return "Rig value must be on or off", 400
     sr = SolarRelay()
     if state == "on":
-        sr.rigOn(True)
-    if state == "off":
+        rigState = sr.rigOn(True)
+        if rigState == "":
+            return ""
+        else:
+            return rigState, 400
+    else:
         sr.rigOff()
-    return ""
+        return ""
 
 
 @app.route("/cache")

@@ -3,3 +3,4 @@ solarwww/__pycache__/
 logs/
 solarui/
 solardaemon/solardaemon_process.log
+working/nohup.out
