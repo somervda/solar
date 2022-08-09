@@ -1,3 +1,4 @@
+import socket
 from flask import Flask, jsonify
 from renogy import Renogy
 from solarlogger import SolarLogger
@@ -8,6 +9,19 @@ from datetime import datetime
 
 
 app = Flask(__name__)
+
+
+def netcat(host, port, content):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host, int(port)))
+    s.sendall(content.encode())
+    s.shutdown(socket.SHUT_WR)
+    while True:
+        data = s.recv(4096)
+        if not data:
+            break
+        return data
+    s.close()
 
 
 @app.route("/renogystatus")
@@ -190,3 +204,11 @@ def rigExpiryMinutes(value):
     sc.rigExpiryMinutes = _value
     sc.writeCache()
     return ""
+
+
+@app.route("/rigctl/<operation>")
+def rigctl(operation=""):
+    try:
+        return netcat("rpi3.home", 4532, "\\" + operation)
+    except:
+        return "rigctl failed", 500
