@@ -80,4 +80,4 @@ also change the dtoverlay driver to vc4-fkms-v3d (The one that gets loaded in la
     public=no
 ```
 
-then do a `sudo smbpasswd -a pi` and `sudo /etc/init.d/samba restart`
+then do a `sudo smbpasswd -a pi` and `sudo systemctl restart smbd`
