@@ -49,6 +49,7 @@ also change the dtoverlay driver to vc4-fkms-v3d (The one that gets loaded in la
 ```
 
 14. Install psutil - solar uses it to manage the rigctld daemon
+
 ```
     sudo pip install psutil
 ```
@@ -61,3 +62,22 @@ also change the dtoverlay driver to vc4-fkms-v3d (The one that gets loaded in la
 23. Optional `sudo apt install gedit` and set up an `export DISPLAY=<XWindows target IP>:0`
 
 24. Optional `sudo apt install acl -y` to install the setfacl command , useful for viewing and changing ACL while debugging, didn't need it in the end
+25. Optional `sudo apt-get install samba samba-common-bin` to install smb and `sudo gedit /etc/samba/smb.conf` to add a share over solar
+
+```
+    [global]
+    netbios name = solar
+    server string = The solar RPI shares
+    workgroup = WORKGROUP
+
+
+    [solar]
+    path = /home/pi/solar
+    comment = No comment
+    writeable=Yes
+    create mask=0777
+    directory mask=0777
+    public=no
+```
+
+then do a `sudo smbpasswd -a pi` and `sudo /etc/init.d/samba restart`
