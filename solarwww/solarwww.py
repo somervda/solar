@@ -209,6 +209,6 @@ def rigExpiryMinutes(value):
 @app.route("/rigctl/<operation>")
 def rigctl(operation=""):
     try:
-        return netcat("rpi3.home", 4532, "\\" + operation).decode("utf-8"), 200, {'Content-Type': 'text/plain; charset=utf-8'}
+        return netcat("loopback", 4532, "\\" + operation).decode("utf-8"), 200, {'Content-Type': 'text/plain; charset=utf-8'}
     except:
         return "rigctl failed", 500
