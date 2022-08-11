@@ -209,6 +209,7 @@ def rigExpiryMinutes(value):
 @app.route("/rigctl/<operation>")
 def rigctl(operation=""):
     try:
-        return netcat("loopback", 4532, "\\" + operation).decode("utf-8"), 200, {'Content-Type': 'text/plain; charset=utf-8'}
-    except:
-        return "rigctl failed", 500
+        return netcat("127.0.0.1", 4532, "\\" + operation).decode("utf-8"), 200, {'Content-Type': 'text/plain; charset=utf-8'}
+    except Exception as e:
+        print(e)
+        return "rigctl failed:", 500
