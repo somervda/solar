@@ -212,5 +212,4 @@ def rigctl(operation=""):
         # return netcat("127.0.0.1", 4532, "\\" + operation).decode("utf-8"), 200, {'Content-Type': 'text/plain; charset=utf-8'}
         return netcat("rpi3.home", 4532, "\\" + operation).decode("utf-8"), 200, {'Content-Type': 'text/plain; charset=utf-8'}
     except Exception as e:
-        print(e)
         return "rigctl failed:", 500

@@ -27,6 +27,7 @@ Includes changes to reduce power usage (Turn off LEDS, turn of USB, Turn off HDM
 ```
 export PATH=$PATH:/home/pi/local/bin:/usr/local/lib/python3.9/site-packages
 export PYTHONPATH=/home/pi/solar/shared:/home/pi/hamlib/hamlib-4.4/bindings:/home/pi/hamlib/hamlib-4.4/bindings/.libs
+echo '1-1' | tee /sys/bus/usb/drivers/usb/unbind
 ```
 
 12. Add this to /boot/config.txt dtoverlay=disable-bt (turns off bluetooth, Place under the [All] section)
