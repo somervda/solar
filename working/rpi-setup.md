@@ -67,9 +67,9 @@ also change the dtoverlay driver to vc4-fkms-v3d (The one that gets loaded in la
     ExecStart = python3 -u /home/pi/solar/solardaemon/solardaemon.py
     User = pi
     Group = pi
-    Restart = on-failure # Restart when there are errors
+    Restart = always
     SyslogIdentifier = solardaemon
-    RestartSec = 60
+    RestartSec = 5s
     TimeoutStartSec = infinity
     Environment=PYTHONPATH=/home/pi/solar/shared
 
