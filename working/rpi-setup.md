@@ -55,6 +55,39 @@ also change the dtoverlay driver to vc4-fkms-v3d (The one that gets loaded in la
     sudo pip install psutil
 ```
 
+15. Set up solardaemon as a linux service - add the following file `/etc/systemd/system/solardaemon.service`
+
+```
+    [Unit]
+    Description = Monitor and manages the renogy solar charger and various relays in my shed
+    After = multi-user.target
+
+    [Service]
+    Type = simple
+    ExecStart = python3 -u /home/pi/solar/solardaemon/solardaemon.py
+    User = pi
+    Group = pi
+    Restart = on-failure # Restart when there are errors
+    SyslogIdentifier = solardaemon
+    RestartSec = 60
+    TimeoutStartSec = infinity
+    Environment=PYTHONPATH=/home/pi/solar/shared
+
+    [Install]
+    WantedBy=multi-user.target
+```
+
+and do the following to enable the service
+
+```
+sudo systemctl daemon-reload
+sudo systemctl enable solardaemon.service
+sudo systemctl start solardaemon.service
+```
+
+check on the service status using: `sudo systemctl status solardaemon.service`
+and check the syslog for solardaemon messages using: `cat /var/log/syslog | grep solardaemon` or `tail -n 20 /var/log/syslog | grep solardaemon`
+
 ### Set up development environment
 
 20. Create a folder called `~/solar`

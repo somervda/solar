@@ -53,15 +53,23 @@ class SolarRelay:
         GPIO.output(self.rigGPIO, GPIO.HIGH)
         # turn on the USB hardware on the RPI
         # Improves on : os.system("echo '1-1' | tee /sys/bus/usb/drivers/usb/bind")
-        with open("/sys/bus/usb/drivers/usb/bind", "w") as usb_bind:
-            usb_bind.write("1-1")
+        # Note: May get an exception if the usb subsystem is already bound
+        try:
+            with open("/sys/bus/usb/drivers/usb/bind", "w") as usb_bind:
+                usb_bind.write("1-1")
+        except:
+            print("rigOn usb bind skipped")
         # Wait 1 second for the rig and usb to power on , then fire up rigctld
         time.sleep(1)
         if not os.path.exists("/dev/ttyUSB0"):
             # Failed to find /dev/ttyUSB0 serial port
             # turn off the USB hardware on the RPI
-            with open("/sys/bus/usb/drivers/usb/unbind", "w") as usb_unbind:
-                usb_unbind.write("1-1")
+            # Note: May get an exception if the usb subsystem is already unbound
+            try:
+                with open("/sys/bus/usb/drivers/usb/unbind", "w") as usb_unbind:
+                    usb_unbind.write("1-1")
+            except:
+                print("rigOn usb unbind skipped 01")
             # Turn off the rig relay
             GPIO.output(self.rigGPIO, GPIO.LOW)
             return "/dev/ttyUSB0 not found"
@@ -79,8 +87,12 @@ class SolarRelay:
         if not rigctldIsRunning:
             # Failed to run rigctld
             # turn off the USB hardware on the RPI
-            with open("/sys/bus/usb/drivers/usb/unbind", "w") as usb_unbind:
-                usb_unbind.write("1-1")
+            # Note: May get an exception if the usb subsystem is already unbound
+            try:
+                with open("/sys/bus/usb/drivers/usb/unbind", "w") as usb_unbind:
+                    usb_unbind.write("1-1")
+            except:
+                print("rigOn usb unbind skipped 02")
             # Turn off the rig relay
             GPIO.output(self.rigGPIO, GPIO.LOW)
             return "rigctld could not be started"
@@ -102,8 +114,12 @@ class SolarRelay:
                 proc.kill()
         # turn off the USB hardware on the RPI
         # Improves on: os.system("echo '1-1' | tee /sys/bus/usb/drivers/usb/unbind")
-        with open("/sys/bus/usb/drivers/usb/unbind", "w") as usb_unbind:
-            usb_unbind.write("1-1")
+        # Note: May get an exception if the usb subsystem is already unbound
+        try:
+            with open("/sys/bus/usb/drivers/usb/unbind", "w") as usb_unbind:
+                usb_unbind.write("1-1")
+        except:
+            print("rigOff usb unbind skipped")
         # Turn off the rig relay
         GPIO.output(self.rigGPIO, GPIO.LOW)
         # Update solarcache.json info
