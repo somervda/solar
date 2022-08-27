@@ -8,17 +8,12 @@ _lastMainLoop = time.gmtime(time.time())
 _loopCnt = 0
 _batteryCapacity = 0
 _solarPower = 0
+_solarVolts = 0
+_solarAmps = 0
 _outputPower = 0
 
 _lastBatteryCapacityRule = True
 _lastWebcamRunAtNightRule = True
-
-_modeNC = 0
-_modeBulk = 0
-_modeBoost = 0
-_modeFloat = 0
-_modeEql = 0
-_modeOther = 0
 
 
 def main():
@@ -44,31 +39,24 @@ def writeLog():
     global _loopCnt
     global _batteryCapacity
     global _solarPower
+    global _solarVolts
+    global _solarAmps
     global _outputPower
 
-    global _modeNC
-    global _modeBulk
-    global _modeBoost
-    global _modeFloat
-    global _modeEql
-    global _modeOther
     print("writeLog {}".format(_lastMainLoop.tm_hour))
     # Write log entry - use running totals averaged over the last hour
     sl = SolarLogger()
     if _loopCnt > 0:
         sl.writeData(round(_batteryCapacity / _loopCnt, 3), round(_solarPower /
-                     _loopCnt, 3), round(_outputPower / _loopCnt, 3), round(_modeNC * 100/_loopCnt, 0),  round(_modeBulk * 100/_loopCnt, 0), round(_modeBoost * 100/_loopCnt, 0), round(_modeFloat * 100/_loopCnt, 0), round(_modeEql * 100/_loopCnt, 0), round(_modeOther * 100/_loopCnt, 0))
+                     _loopCnt, 3), round(_outputPower / _loopCnt, 3),
+                     round(_solarAmps / _loopCnt, 3), round(_solarVolts / _loopCnt, 3))
     # Reset data for collection over next hour
     _loopCnt = 0
     _batteryCapacity = 0
     _solarPower = 0
     _outputPower = 0
-    _modeNC = 0
-    _modeBulk = 0
-    _modeBoost = 0
-    _modeFloat = 0
-    _modeEql = 0
-    _modeOther = 0
+    _solarAmps = 0
+    _solarVolts = 0
     _lastMainLoop = time.gmtime(time.time())
 
 
@@ -78,45 +66,27 @@ def updateState():
     global _loopCnt
     global _batteryCapacity
     global _solarPower
+    global _solarVolts
+    global _solarAmps
     global _outputPower
     global _lastBatteryCapacityRule
     global _lastWebcamRunAtNightRule
 
-    global _modeNC
-    global _modeBulk
-    global _modeBoost
-    global _modeFloat
-    global _modeEql
-    global _modeOther
     r = Renogy()
     if _loopCnt > 0:
-        print("updateState {} {} {} {} {} {}".format(time.strftime("%x %X", time.localtime(time.time())),
-                                                     _loopCnt, round(r.batteryCapacity, 3), round(r.solarPower, 3), round(r.outputPower, 3), r.chargingModeDesc))
+        print("updateState {} {} {} {} {} {} {} {}".format(time.strftime("%x %X", time.localtime(time.time())),
+                                                           _loopCnt, round(r.batteryCapacity, 3), round(
+                                                               r.solarPower, 3),
+                                                           round(r.outputPower, 3), r.chargingModeDesc,  round(r.solarVolts, 3),  round(r.solarAmps, 3)))
     else:
         print("updateState ")
     # Perform management functions each minute
     _loopCnt += 1
     _batteryCapacity += r.batteryCapacity
     _solarPower += r.solarPower
+    _solarVolts += r.solarVolts
+    _solarAmps += r.solarAmps
     _outputPower += r.outputPower
-    #  Add to the charging mode trackers
-
-    if r.chargingMode == 0:  # No charging
-        _modeNC += 1
-    elif r.chargingMode == 1:  # Activated
-        _modeOther += 1
-    elif r.chargingMode == 2:  # MPPT
-        _modeBulk += 1
-    elif r.chargingMode == 3:  # Equalizing
-        _modeEql += 1
-    elif r.chargingMode == 4:  # Boost
-        _modeBoost += 1
-    elif r.chargingMode == 5:  # Float
-        _modeFloat += 1
-    elif r.chargingMode == 6:  # Overpowered (Current limited)
-        _modeOther += 1
-    else:
-        _modeOther += 1
 
     # **** webcam power rules  ***
     sc = SolarCache()

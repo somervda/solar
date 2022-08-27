@@ -11,12 +11,12 @@ class SolarLogger:
     def __init__(self):
         self.loggingDirectory = "/home/pi/solar/logs/"
 
-    def writeData(self, batteryCapacity, solarPower, outputPower, modeNC, modeBulk, modeBoost, modeFloat, modeEql, modeOther):
+    def writeData(self, batteryCapacity, solarPower, outputPower, solarAmps, solarVolts):
         # writes a record to the current days log
         timeNow = time.time()
         timeGMT = time.gmtime(timeNow)
-        logEntry = "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n".format(
-            round(timeNow), batteryCapacity, solarPower, outputPower, modeNC, modeBulk, modeBoost, modeFloat, modeEql, modeOther)
+        logEntry = "{}\t{}\t{}\t{}\t{}\t{}\n".format(
+            round(timeNow), batteryCapacity, solarPower, outputPower, solarAmps, solarVolts)
         # Write the entry to the log file for the day
         fn = "{}solar{:04d}{:02d}{:02d}.tab".format(
             self.loggingDirectory, timeGMT.tm_year,  timeGMT.tm_mon,  timeGMT.tm_mday)
