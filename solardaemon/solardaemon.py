@@ -12,6 +12,9 @@ _solarVolts = 0
 _solarAmps = 0
 _outputPower = 0
 
+_modeBoost = 0
+_modeFloat = 0
+
 _lastBatteryCapacityRule = True
 _lastWebcamRunAtNightRule = True
 
@@ -42,6 +45,8 @@ def writeLog():
     global _solarVolts
     global _solarAmps
     global _outputPower
+    global _modeBoost
+    global _modeFloat
 
     print("writeLog {}".format(_lastMainLoop.tm_hour))
     # Write log entry - use running totals averaged over the last hour
@@ -49,7 +54,9 @@ def writeLog():
     if _loopCnt > 0:
         sl.writeData(round(_batteryCapacity / _loopCnt, 3), round(_solarPower /
                      _loopCnt, 3), round(_outputPower / _loopCnt, 3),
-                     round(_solarAmps / _loopCnt, 3), round(_solarVolts / _loopCnt, 3))
+                     round(_solarAmps / _loopCnt,
+                           3), round(_solarVolts / _loopCnt, 3),
+                     round(_modeBoost * 100/_loopCnt, 0), round(_modeFloat * 100/_loopCnt, 0))
     # Reset data for collection over next hour
     _loopCnt = 0
     _batteryCapacity = 0
@@ -57,6 +64,8 @@ def writeLog():
     _outputPower = 0
     _solarAmps = 0
     _solarVolts = 0
+    _modeBoost = 0
+    _modeFloat = 0
     _lastMainLoop = time.gmtime(time.time())
 
 
@@ -69,6 +78,8 @@ def updateState():
     global _solarVolts
     global _solarAmps
     global _outputPower
+    global _modeBoost
+    global _modeFloat
     global _lastBatteryCapacityRule
     global _lastWebcamRunAtNightRule
 
@@ -87,6 +98,12 @@ def updateState():
     _solarVolts += r.solarVolts
     _solarAmps += r.solarAmps
     _outputPower += r.outputPower
+    #  Add to the charging mode trackers (Only track float and boast)
+
+    if r.chargingMode == 4:  # Boost
+        _modeBoost += 1
+    elif r.chargingMode == 5:  # Float
+        _modeFloat += 1
 
     # **** webcam power rules  ***
     sc = SolarCache()
