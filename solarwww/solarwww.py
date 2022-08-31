@@ -1,4 +1,5 @@
 import socket
+from tokenize import Number
 from flask import Flask, jsonify
 from renogy import Renogy
 from solarlogger import SolarLogger
@@ -42,7 +43,7 @@ def renogystatus():
     return data
 
 
-# renogyhistory has three possable route structures depending on what parameters are passed
+# renogyhistory has three possible route structures depending on what parameters are passed
 # No parameters will return last 24 hours of data
 # One parameter - will return data starting from the time (epoch seconds) passed
 # two parameters - will return data starting from the first time and ending at the second
@@ -73,8 +74,41 @@ def renogyhistory(start=0, end=0):
     for logEntry in logEntries:
         entryItems = logEntry.split("\t")
         if len(entryItems) >= 4:
-            entryArray = [int(entryItems[0]), float(entryItems[1]), float(
-                entryItems[2]), float(entryItems[3])]
+            entryArray = [int(entryItems[0]), float(entryItems[1]), float(entryItems[2]), float(
+                entryItems[3])]
+            data.append(entryArray)
+    # flask converts dictionary objects to json
+    return jsonify(data)
+
+
+@app.route("/panelhistory/<start>/<end>")
+@app.route("/panelhistory/<start>")
+@app.route("/panelhistory")
+def panelhistory(start=0, end=0):
+    # Check the start and end values are integers
+    try:
+        _start = int(start)
+        _end = int(end)
+    except:
+        return "Start/End values not integer(s).", 400
+    if start == 0:
+        start = (time.time() - (24 * 60 * 60))
+    if end == 0:
+        end = time.time()
+    with open("/home/pi/solar/logs/solarwww.log", "a") as logging_file:
+        logging_file.write("{} start:{} end:{}\n".format(
+            datetime.now(), start, end))
+    sl = SolarLogger()
+    log = sl.getLogData(int(start), int(end))
+    # Convert the data from getLogData (Tab delimited) to a dictionary object
+    data = []
+    logEntries = log.split("\n")
+    for logEntry in logEntries:
+        entryItems = logEntry.split("\t")
+        if len(entryItems) == 8:
+            # entryArray = [int(entryItems[0])]
+            entryArray = [int(entryItems[0]), float(entryItems[5]), float(
+                entryItems[6]), float(entryItems[7])]
             data.append(entryArray)
             # data[int(entryItems[0])] = entryArray
     # flask converts dictionary objects to json
