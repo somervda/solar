@@ -161,7 +161,7 @@ then do a `sudo smbpasswd -a pi` and `sudo systemctl restart smbd`
 ```
 
 36. Setup Xvfb to run as a service. Add the following file `/etc/systemd/system/xvfb.service`
-
+```
     [Unit]
     Description=X Virtual Frame Buffer Service
     After=network.target
