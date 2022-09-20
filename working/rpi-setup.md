@@ -189,9 +189,9 @@ then do a `sudo smbpasswd -a pi` and `sudo systemctl restart smbd`
     sudo apt install mumble
 ```
 
-39. The mumble client can be run manually by just typing `mumble`. To run the client headless do the following (Note: solarui and solarwwww will do this automatically when the rig is turned on). This uses nohup to allow the process to run after the session has ended. The mumble-server connection info is passed to mumble on the command line. The whole thing is run as a background process. You will need to use `ps aux | grep mumble` to find and then kill mumble. Reset the DISPLAY setting after finishing with mumble.
+39. The mumble client can be run manually by just typing `mumble`. To run the client headless do the following (Note: solarui and solarwwww will do this automatically when the rig is turned on). This uses `nohup` to allow the process to run after the session has ended. The mumble-server connection `mumble://rpi3:@rpi3.home` info is passed to mumble on the command line. The `2> /dev/null` redirects the stdout text into a blackhole. The whole thing is run as a background process `&`. You will need to use `ps aux | grep mumble` to find and then kill mumble. Reset the DISPLAY setting after finishing with mumble.
 
 ```
     export DISPLAY=:99
-    nohup mumble mumble://rpi3:@rpi3.home &
+    nohup mumble mumble://rpi3:@rpi3.home 2> /dev/null &
 ```
