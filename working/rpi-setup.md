@@ -115,3 +115,88 @@ and check the syslog for solardaemon messages using: `cat /var/log/syslog | grep
 ```
 
 then do a `sudo smbpasswd -a pi` and `sudo systemctl restart smbd`
+
+### Mumble setup
+
+#### Mumble Server
+
+30. Install mumble-server
+    ```
+    sudo apt install mumble-server
+    ```
+31. Configure mumble-server
+    ```
+    sudo dpkg-reconfigure mumble-server
+    ```
+    - auto start = yes
+    - high priority
+    - set SuperUser password
+32. Edit the mumble-server.ini file
+
+    ```
+    sudo nano /etc/mumble-server.ini
+    ```
+
+    - Update the welcome message
+    - (Optional) Update the server-password if you want to secure access to the server. Otherwise leave it blank.
+
+33. Restart mumble-server
+
+```
+    4.	/etc/init.d/mumble-server restart
+```
+
+#### Mumble Client
+
+34. Install pulseaudio (Mumble client seems to work best with these drivers)
+
+```
+    sudo apt install pulseaudio
+```
+
+35. Install Xvfb (An Xserver that does not use display)- This will allow the mumble client to run headless
+
+```
+    sudo apt install xvfb
+```
+
+36. Setup Xvfb to run as a service
+
+```
+    sudo nano /etc/systemd/system/xvfb.service
+
+  Add the following to the file and save
+
+    [Unit]
+    Description=X Virtual Frame Buffer Service
+    After=network.target
+
+    [Service]
+    ExecStart=/usr/bin/Xvfb :99 -screen 0 1024x768x24
+    Restart = always
+    SyslogIdentifier = Xvfb
+    RestartSec = 5s
+
+    [Install]
+    WantedBy=multi-user.target
+```
+
+37. Enable and start the Xvfb service. Note: Use `export DISPLAY=:99` to send Xwindows to this service.
+
+```
+    sudo systemctl enable /etc/systemd/system/xvfb.service
+    sudo service xvfb start
+```
+
+38. Install the mumble client
+
+```
+    sudo apt install mumble
+```
+
+39. The mumble client can be run manually by just typing `mumble`. To run the client headless do the following (Note: solarui and solarwwww will do this automatically when the rig is turned on). This uses nohup to allow the process to run after the session has ended. The mumble-server connection info is passed to mumble on the command line. The whole thing is run as a background process. You will need to use `ps aux | grep mumble` to find and then kill mumble. Reset the DISPLAY setting after finishing with mumble.
+
+```
+    export DISPLAY=:99
+    nohup mumble mumble://rpi3:@rpi3.home &
+```
