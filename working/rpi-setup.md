@@ -160,12 +160,7 @@ then do a `sudo smbpasswd -a pi` and `sudo systemctl restart smbd`
     sudo apt install xvfb
 ```
 
-36. Setup Xvfb to run as a service
-
-```
-    sudo nano /etc/systemd/system/xvfb.service
-
-  Add the following to the file and save
+36. Setup Xvfb to run as a service. Add the following file `/etc/systemd/system/xvfb.service`
 
     [Unit]
     Description=X Virtual Frame Buffer Service
