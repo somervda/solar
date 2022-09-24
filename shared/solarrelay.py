@@ -6,6 +6,7 @@ import RPi.GPIO as GPIO
 import time
 import os
 import psutil
+# from subprocess import PIPE, Popen
 
 
 class SolarRelay:
@@ -47,6 +48,39 @@ class SolarRelay:
         sc.webcamExpiry = None
         sc.writeCache()
 
+    def mumbleOn(self):
+        # Start mumble client
+
+        # Fire up mumble client as a background, headless process
+        # Comment out required option
+        # Option 1 - Show mumble gui so sound interface wizard can be run and stored for www-data user
+        # os.system("export DISPLAY=PowerSpec-G703.home:0;nohup mumble mumble://rig:@rpi3.home 2> /dev/null &")
+
+        # Option 2 -Hide GUI once config is setup.
+        os.system("export DISPLAY=:99;nohup mumble mumble://rig:@rpi3.home 2> /dev/null &")
+
+        # Check mumble is running
+        mumbleIsRunning = False
+        mumbleCnt = 0
+        while mumbleCnt < 5 and not mumbleIsRunning:
+            for proc in psutil.process_iter(['pid', 'name']):
+                if proc.info["name"] == "mumble":
+                    mumbleIsRunning = True
+            mumbleCnt+=1
+            time.sleep(1)
+        if  mumbleIsRunning:
+            return ""
+        else:
+            return "mumble could not be started"
+
+    def mumbleOff(self):
+        # find and kill mumble client
+        for proc in psutil.process_iter(['pid', 'name']):
+            if proc.info["name"] == "mumble":
+                proc.kill()
+        os.system("export DISPLAY=PowerSpec-G703.home:0")
+        return ""
+
     def rigOn(self, updateExpiry=False):
         # updateExpiry only used when called as a manual power on from web service
         # Turn on the rig relay
@@ -83,7 +117,7 @@ class SolarRelay:
         for proc in psutil.process_iter(['pid', 'name']):
             if proc.info["name"] == "rigctld":
                 rigctldIsRunning = True
-                print(proc.info)
+                # print(proc.info)
         if not rigctldIsRunning:
             # Failed to run rigctld
             # turn off the USB hardware on the RPI
@@ -96,7 +130,9 @@ class SolarRelay:
             # Turn off the rig relay
             GPIO.output(self.rigGPIO, GPIO.LOW)
             return "rigctld could not be started"
-
+        # Fire up mumble
+        mumbleResult = self.mumbleOn()
+        time.sleep(1)
         # Success: Update solarcache.json info
         sc = SolarCache()
         sc.rigOn = True
@@ -107,11 +143,20 @@ class SolarRelay:
         sc.writeCache()
         return ""
 
+    def getMumbleState(self):
+        for proc in psutil.process_iter(['pid', 'name']):
+            if proc.info["name"] == "mumble":
+                return "on"
+        return "off"
+
+
     def rigOff(self):
         # find and kill the rigctld daemon
         for proc in psutil.process_iter(['pid', 'name']):
             if proc.info["name"] == "rigctld":
                 proc.kill()
+        # find and kill mumble client
+        self.mumbleOff()
         # turn off the USB hardware on the RPI
         # Improves on: os.system("echo '1-1' | tee /sys/bus/usb/drivers/usb/unbind")
         # Note: May get an exception if the usb subsystem is already unbound
@@ -127,3 +172,4 @@ class SolarRelay:
         sc.rigOn = False
         sc.rigExpiry = None
         sc.writeCache()
+

@@ -1,8 +1,0 @@
-rig_open: error = Communication timed out
-kenwood_open: no response from rig
-kenwood.c(872):kenwood_open return(-5)
-rig.c(1031):rig_open return(-5) /dev/ttyUSB0 Success 
-rig_open: error = IO error
-port_open: serial_open(/dev/ttyUSB0) status=-6, err=No such file or directory
-iofunc.c(81):port_open return(-6)
-rig.c(800):rig_open return(-6) /dev/ttyUSB0 No such file or directory 

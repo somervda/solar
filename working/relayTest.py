@@ -1,8 +1,8 @@
 import time
 from solarrelay import SolarRelay
 sr = SolarRelay()
-sr.rigOn()
-print("On")
-time.sleep(15)
-sr.rigOff()
-print("off")
+out=sr.rigOn()
+print("On:",out)
+# time.sleep(15)
+# sr.rigOff()
+# print("off")

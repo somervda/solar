@@ -141,7 +141,26 @@ def rig(state):
     else:
         sr.rigOff()
         return ""
+  
+@app.route("/mumble/<state>")
+def mumble(state):
+    if not (state == "on" or state == "off"):
+        return "Mumble value must be on or off", 400
+    sr = SolarRelay()
+    if state == "on":
+        mumbleState = sr.mumbleOn()
+        if mumbleState == "":
+            return ""
+        else:
+            return mumbleState, 400
+    else:
+        sr.mumbleOff()
+        return ""
 
+@app.route("/mumble")
+def mumbleState():
+    sr = SolarRelay()
+    return  sr.getMumbleState()
 
 @app.route("/cache")
 def cache():

@@ -191,7 +191,9 @@ then do a `sudo smbpasswd -a pi` and `sudo systemctl restart smbd`
 
 39. The mumble client can be run manually by just typing `mumble`. To run the client headless do the following (Note: solarui and solarwwww will do this automatically when the rig is turned on). This uses `nohup` to allow the process to run after the session has ended. The mumble-server connection `mumble://rpi3:@rpi3.home` info is passed to mumble on the command line. The `2> /dev/null` redirects the stdout text into a blackhole. The whole thing is run as a background process `&`. You will need to use `ps aux | grep mumble` to find and then kill mumble. Reset the DISPLAY setting after finishing with mumble.
 
+Note: Things get more complicated when envoking the mumble client from the webservice called from `solarwww.py`. The web service runs under the `www-data` user. Mumble keeps info about sound interface to use in the `$HOME/.config/Mumble/Mumble.conf` file. So to configure the sound drivers for the web service you will need to run mumble at least once with the Xwindows interface pointing to a real service so the `$HOME/.config/Mumble/Mumble.conf` can be updated for `www-data` user. For me that required changing the code in `solarrelay.py` to run in each mode (Different DISPAY settings). Once set on the RPI, it does not need to be touched again and you can just use `export DISPLAY=:99` to hide the GUI.
+
 ```
     export DISPLAY=:99
-    nohup mumble mumble://rpi3:@rpi3.home 2> /dev/null &
+    nohup mumble mumble://rig:@rpi3.home 2> /dev/null &
 ```
