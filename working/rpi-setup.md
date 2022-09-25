@@ -143,7 +143,7 @@ then do a `sudo smbpasswd -a pi` and `sudo systemctl restart smbd`
 33. Restart mumble-server
 
 ```
-    4.	/etc/init.d/mumble-server restart
+    4.	sudo /etc/init.d/mumble-server restart
 ```
 
 #### Mumble Client
