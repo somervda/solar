@@ -6,6 +6,7 @@ import RPi.GPIO as GPIO
 import time
 import os
 import psutil
+import settings 
 # from subprocess import PIPE, Popen
 
 
@@ -57,7 +58,7 @@ class SolarRelay:
         # os.system("export DISPLAY=PowerSpec-G703.home:0;nohup mumble mumble://rig:@rpi3.home 2> /dev/null &")
 
         # Option 2 -Hide GUI once config is setup.
-        os.system("export DISPLAY=:99;nohup mumble mumble://rig:@rpi3.home 2> /dev/null &")
+        os.system("export DISPLAY=:99;nohup mumble mumble://rig:@" + settings.HOST + " 2> /dev/null &")
 
         # Check mumble is running
         mumbleIsRunning = False
@@ -78,7 +79,7 @@ class SolarRelay:
         for proc in psutil.process_iter(['pid', 'name']):
             if proc.info["name"] == "mumble":
                 proc.kill()
-        os.system("export DISPLAY=PowerSpec-G703.home:0")
+        os.system("export DISPLAY=" + settings.DEFAULT_XWINDOWS_SERVER)
         return ""
 
     def rigOn(self, updateExpiry=False):
