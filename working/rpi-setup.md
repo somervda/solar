@@ -194,7 +194,8 @@ then do a `sudo smbpasswd -a pi` and `sudo systemctl restart smbd`
 
 Note: Things get more complicated when invoking the mumble client from the webservice called from `solarwww.py`. The web service runs under the `www-data` user. Mumble keeps info about sound interface to use in the `$HOME/.config/Mumble/Mumble.conf` file. So to configure the sound drivers for the web service you will need to run mumble at least once with the Xwindows interface pointing to a real service so the `$HOME/.config/Mumble/Mumble.conf` can be updated for `www-data` user. For me that required changing the code in `solarrelay.py` to run in each mode (Different DISPAY settings). Once set on the RPI, it does not need to be touched again and you can just use `export DISPLAY=:99` to hide the GUI.
 
-************\*\*\************* Important ****************************************\*****************************************
+---
+
 Big Note!!! - You will need to run the mumble client at least one manually with the mumble mumble://rig:@solar.home command line
 at least once to accept the certificate (You only need to do this once)
 
