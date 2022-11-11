@@ -5,6 +5,7 @@ from renogy import Renogy
 from solarlogger import SolarLogger
 from solarrelay import SolarRelay
 from solarcache import SolarCache
+import settings
 import time
 from datetime import datetime
 
@@ -141,7 +142,8 @@ def rig(state):
     else:
         sr.rigOff()
         return ""
-  
+
+
 @app.route("/mumble/<state>")
 def mumble(state):
     if not (state == "on" or state == "off"):
@@ -157,10 +159,12 @@ def mumble(state):
         sr.mumbleOff()
         return ""
 
+
 @app.route("/mumble")
 def mumbleState():
     sr = SolarRelay()
-    return  sr.getMumbleState()
+    return sr.getMumbleState()
+
 
 @app.route("/cache")
 def cache():
@@ -263,6 +267,6 @@ def rigExpiryMinutes(value):
 def rigctl(operation=""):
     try:
         # return netcat("127.0.0.1", 4532, "\\" + operation).decode("utf-8"), 200, {'Content-Type': 'text/plain; charset=utf-8'}
-        return netcat("rpi3.home", 4532, "\\" + operation).decode("utf-8"), 200, {'Content-Type': 'text/plain; charset=utf-8'}
+        return netcat(settings.HOST, 4532, "\\" + operation).decode("utf-8"), 200, {'Content-Type': 'text/plain; charset=utf-8'}
     except Exception as e:
         return "rigctl failed:", 500
